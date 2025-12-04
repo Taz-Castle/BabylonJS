@@ -1,7 +1,7 @@
 import { Engine } from "@babylonjs/core";
 import createStartScene from "./createStartScene";
 import './main.css';
-import {createCharacterController} from "./createCharacterController";
+import {createCharacterController} from "./characterController";
 import { gui } from "./gui";
 import { setupCollisions } from "./collisions";
 import { SceneData } from "./interface";
@@ -25,3 +25,7 @@ let eng = new Engine(canvas, true, {}, true);
         startScene.scene.render();
     });
 })();
+
+
+           
+ 

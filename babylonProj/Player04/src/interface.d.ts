@@ -14,3 +14,6 @@ export interface SceneData {
       box1?:PhysicsAggregate;
       box2?:PhysicsAggregate;
 }
+
+
+

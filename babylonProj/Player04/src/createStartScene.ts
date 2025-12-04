@@ -1,5 +1,5 @@
-// import "@babylonjs/core/Debug/debugLayer";
-// import "@babylonjs/inspector";
+//import "@babylonjs/core/Debug/debugLayer";
+//import "@babylonjs/inspector";
 import "@babylonjs/loaders/glTF/2.0";
 import HavokPhysics, { HavokPhysicsWithBindings } from "@babylonjs/havok";
 import {
@@ -189,6 +189,11 @@ export default async function createStartScene(engine: Engine) {
   assetsManager.load();
   return that;
 }
+
+
+
+
+
 
 
 
