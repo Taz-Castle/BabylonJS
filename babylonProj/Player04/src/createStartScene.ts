@@ -1,78 +1,48 @@
 // import "@babylonjs/core/Debug/debugLayer";
 // import "@babylonjs/inspector";
-import { SceneData } from "./interface";
-
+import "@babylonjs/loaders/glTF/2.0";
+import HavokPhysics, { HavokPhysicsWithBindings } from "@babylonjs/havok";
 import {
   Scene,
   ArcRotateCamera,
+  AssetsManager,
   Vector3,
-  MeshBuilder,
-  StandardMaterial,
   HemisphericLight,
-  Color3,
+  MeshBuilder,
+  Mesh,
+  Camera,
   Engine,
+  HavokPlugin,
+  PhysicsAggregate,
+  PhysicsShapeType,
+  Color3,
+  StandardMaterial,
   Texture,
-  SceneLoader,
-  AbstractMesh,
-  ISceneLoaderAsyncResult,
-  Sound
 } from "@babylonjs/core";
 
-function backgroundMusic(scene: Scene): Sound{
-  let music = new Sound("music", "./assets/audio/arcade-kid.mp3", scene,  null ,
-   {
-      loop: true,
-      autoplay: true
-  });
 
-  Engine.audioEngine!.useCustomUnlockedButton = true;
-
-  // Unlock audio on first user interaction.
-  window.addEventListener('click', () => {
-    if(!Engine.audioEngine!.unlocked){
-        Engine.audioEngine!.unlock();
-    }
-}, { once: true });
-  return music;
+function createLight(scene: Scene) {
+  const light = new HemisphericLight("light", new Vector3(0, 1, 0), scene);
+  light.intensity = 0.7;
+  return light;
 }
 
 function createGround(scene: Scene) {
-  const groundMaterial = new StandardMaterial("groundMaterial");
-  const groundTexture = new Texture("./assets/textures/wood.jpg");
-  groundTexture.uScale  = 4.0; //Repeat 4 times on the Vertical Axes
-  groundTexture.vScale  = 4.0; //Repeat 4 times on the Horizontal Axes
-  groundMaterial.diffuseTexture = groundTexture;
- // groundMaterial.diffuseTexture = new Texture("./assets/textures/wood.jpg");
-  groundMaterial.diffuseTexture.hasAlpha = true;
-
-  groundMaterial.backFaceCulling = false;
   let ground = MeshBuilder.CreateGround(
     "ground",
-    { width: 15, height: 15, subdivisions: 4 },
+    { width: 16, height: 16 },
     scene
   );
-
-  ground.material = groundMaterial;
-  return ground;
-}
-
-function createHemisphericLight(scene: Scene) {
-  const light = new HemisphericLight(
-    "light",
-    new Vector3(2, 1, 0), // move x pos to direct shadows
-    scene
-  );
-  light.intensity = 0.7;
-  light.diffuse = new Color3(1, 1, 1);
-  light.specular = new Color3(1, 0.8, 0.8);
-  light.groundColor = new Color3(0, 0.2, 0.7);
-  return light;
+  
+    // Create a static box shape.
+  let groundAggregate = new PhysicsAggregate(ground, PhysicsShapeType.BOX, { mass: 0 }, scene);
+  return groundAggregate;
 }
 
 function createArcRotateCamera(scene: Scene) {
   let camAlpha = -Math.PI / 2,
     camBeta = Math.PI / 2.5,
-    camDist = 15,
+    camDist = 10,
     camTarget = new Vector3(0, 0, 0);
   let camera = new ArcRotateCamera(
     "camera1",
@@ -82,52 +52,141 @@ function createArcRotateCamera(scene: Scene) {
     camTarget,
     scene
   );
-  camera.lowerRadiusLimit = 9;
-  camera.upperRadiusLimit = 25;
-  camera.lowerAlphaLimit = 0;
-  camera.upperAlphaLimit = Math.PI * 2;
-  camera.lowerBetaLimit = 0;
-  camera.upperBetaLimit = Math.PI / 2.02;
-
   camera.attachControl(true);
   return camera;
 }
 
-function importMeshA(scene: Scene, x: number, y: number) {
-  let item: Promise<void | ISceneLoaderAsyncResult> =
-    SceneLoader.ImportMeshAsync(
-      "",
-      "./assets/",
-      "dummy3.babylon",
-      scene
-    );
+function createBox1(scene: Scene) {
+  let box = MeshBuilder.CreateBox("box", { width: 1, height: 1 }, scene);
+  box.position.x = -1;
+  box.position.y = 3;
+  box.position.z = 1;
 
-  item.then((result) => {
-    let character: AbstractMesh = result!.meshes[0];
-    character.position.x = x;
-    character.position.y = y + 0.1;
-    character.scaling = new Vector3(1, 1, 1);
-    character.rotation = new Vector3(0, 1.5, 0);
-  });
-  return item;
+  var texture = new StandardMaterial("reflective", scene);
+  texture.ambientTexture = new Texture(
+    "./assets/textures/wood.jpg",
+    scene
+  );
+  texture.diffuseColor = new Color3(1, 1, 1);
+  box.material = texture;
+  let box1Aggregate = new PhysicsAggregate(box, PhysicsShapeType.BOX, {mass: 0.2, restitution:0.1, friction:0.4}, scene);
+  box1Aggregate.body.setCollisionCallbackEnabled(true);
+  return box1Aggregate;
 }
 
-export default function createStartScene(engine: Engine) {
-  let scene = new Scene(engine);
-  let audio = backgroundMusic(scene);
-  let lightHemispheric = createHemisphericLight(scene);
-  let camera = createArcRotateCamera(scene);
-  let player = importMeshA(scene, 0, 0);
-  let ground = createGround(scene);
+function createBox2(scene: Scene) {
+  let box = MeshBuilder.CreateBox("box", { width: 1, height: 1 }, scene);
+  box.position.x = -0.7;
+  box.position.y = 5;
+  box.position.z = 1;
 
-  let that: SceneData = {
-    scene,
-    audio,
-    lightHemispheric,
-    camera,
-    player,
-    ground,
+  var texture = new StandardMaterial("reflective", scene);
+  texture.ambientTexture = new Texture(
+    "./assets/textures/wood.jpg",
+    scene
+  );
+  texture.diffuseColor = new Color3(1, 1, 1);
+  box.material = texture;
+  let box2Aggregate = new PhysicsAggregate(box, PhysicsShapeType.BOX, {mass: 0.2, restitution:0.1, friction:0.4}, scene);
+  box2Aggregate.body.setCollisionCallbackEnabled(true);
+  return box2Aggregate;
+}
+
+function addAssets(scene: Scene) {
+  // add assets here
+  const assetsManager = new AssetsManager(scene);
+  const tree1 = assetsManager.addMeshTask(
+    "tree1 task",
+    "",
+    "./assets/nature/gltf/",
+    "CommonTree_1.gltf"
+  );
+  tree1.onSuccess = function (task) {
+    const root = task.loadedMeshes[0];
+    root.position = new Vector3(3, 0, 2);
+    root.scaling = new Vector3(0.5, 0.5, 0.5);
+    // Ensure all child meshes are visible
+    task.loadedMeshes.forEach((mesh: any) => {
+      mesh.isVisible = true;
+    });
+    //new PhysicsAggregate(root, PhysicsShapeType.MESH, {mass: 0}, scene);
+    
+    // Clone tree1
+    const tree1Clone = root.clone("tree1_clone", null);
+    tree1Clone!.position = new Vector3(0, 0, 5);
+    //new PhysicsAggregate(tree1Clone!, PhysicsShapeType.MESH, {mass: 0}, scene);
   };
+
+  const tree2 = assetsManager.addMeshTask(
+    "tree1 task",
+    "",
+    "./assets/nature/gltf/",
+    "CommonTree_2.gltf"
+  );
+  tree2.onSuccess = function (task) {
+    task.loadedMeshes[0].position = new Vector3(0, 0, 2);
+    task.loadedMeshes[0].scaling = new Vector3(0.5, 0.5, 0.5);
+    // Clone tree2
+    const tree2Clone = task.loadedMeshes[0].clone("tree2_clone", null);
+    tree2Clone!.position = new Vector3(-3, 0, 5);
+  };
+
+  const tree3 = assetsManager.addMeshTask(
+    "tree1 task",
+    "",
+    "./assets/nature/gltf/",
+    "CommonTree_3.gltf"
+  );
+  tree3.onSuccess = function (task) {
+    task.loadedMeshes[0].position = new Vector3(-3, 0, 2);
+    task.loadedMeshes[0].scaling = new Vector3(0.5, 0.5, 0.5);
+    // Clone tree3
+    const tree3Clone = task.loadedMeshes[0].clone("tree3_clone", null);
+    tree3Clone!.position = new Vector3(3, 0, 5);
+  };
+
+  assetsManager.onTaskErrorObservable.add(function (task) {
+    console.log(
+      "task failed",
+      task.errorObject.message,
+      task.errorObject.exception
+    );
+  });
+  return assetsManager;
+}
+
+
+export default async function createStartScene(engine: Engine) {
+  interface SceneData {
+    scene: Scene;
+    light?: HemisphericLight;
+    ground?: PhysicsAggregate;
+    camera?: Camera;
+    box1?:PhysicsAggregate;
+    box2?:PhysicsAggregate;
+  }
+
+  let that: SceneData = { scene: new Scene(engine) };
+
+  let initializedHavok: any;
+
+  HavokPhysics().then((havok) => {
+    initializedHavok = havok;
+  });
+
+  const havokInstance: HavokPhysicsWithBindings = await HavokPhysics();
+  const hk: HavokPlugin = new HavokPlugin(true, havokInstance);
+  that.scene.enablePhysics(new Vector3(0, -9.81, 0), hk);
+
+  //that.scene.debugLayer.show();
+
+  that.light = createLight(that.scene);
+  that.ground = createGround(that.scene);
+  that.camera = createArcRotateCamera(that.scene);
+  that.box1 = createBox1(that.scene);
+  that.box2 = createBox2(that.scene);
+  const assetsManager = addAssets(that.scene);
+  assetsManager.load();
   return that;
 }
 

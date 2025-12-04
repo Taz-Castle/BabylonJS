@@ -1,7 +1,10 @@
 import { Engine } from "@babylonjs/core";
 import createStartScene from "./createStartScene";
-import createRunScene from "./createRunScene";
 import './main.css';
+import {createCharacterController} from "./createCharacterController";
+import { gui } from "./gui";
+import { setupCollisions } from "./collisions";
+import { SceneData } from "./interface";
 
 const CanvasName = "renderCanvas";
 
@@ -12,9 +15,13 @@ canvas.classList.add("background-canvas");
 document.body.appendChild(canvas);
 
 let eng = new Engine(canvas, true, {}, true);
-let startScene = createStartScene(eng);
-createRunScene(startScene);
 
-eng.runRenderLoop(() => {
-    startScene.scene.render();
-});  
+(async function main() {
+    const startScene = await createStartScene(eng);
+    createCharacterController(startScene.scene);
+    setupCollisions(startScene);
+    gui(startScene.scene);
+    eng.runRenderLoop(() => {
+        startScene.scene.render();
+    });
+})();
