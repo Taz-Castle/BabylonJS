@@ -97,7 +97,7 @@ function importMeshA(scene: Scene, x: number, y: number) {
   let item: Promise<void | ISceneLoaderAsyncResult> =
     SceneLoader.ImportMeshAsync(
       "",
-      "./assets/models/",
+      "./assets/",
       "dummy3.babylon",
       scene
     );
