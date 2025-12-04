@@ -18,24 +18,6 @@ import {
   Sound
 } from "@babylonjs/core";
 
-function backgroundMusic(scene: Scene): Sound{
-  let music = new Sound("music", "./assets/audio/arcade-kid.mp3", scene,  null ,
-   {
-      loop: true,
-      autoplay: true
-  });
-
-  Engine.audioEngine!.useCustomUnlockedButton = true;
-
-  // Unlock audio on first user interaction.
-  window.addEventListener('click', () => {
-    if(!Engine.audioEngine!.unlocked){
-        Engine.audioEngine!.unlock();
-    }
-}, { once: true });
-  return music;
-}
-
 function createGround(scene: Scene) {
   const groundMaterial = new StandardMaterial("groundMaterial");
   const groundTexture = new Texture("./assets/textures/wood.jpg");
@@ -114,7 +96,6 @@ function importMeshA(scene: Scene, x: number, y: number) {
 
 export default function createStartScene(engine: Engine) {
   let scene = new Scene(engine);
-  let audio = backgroundMusic(scene);
   let lightHemispheric = createHemisphericLight(scene);
   let camera = createArcRotateCamera(scene);
   let player = importMeshA(scene, 0, 0);
@@ -122,7 +103,6 @@ export default function createStartScene(engine: Engine) {
 
   let that: SceneData = {
     scene,
-    audio,
     lightHemispheric,
     camera,
     player,
