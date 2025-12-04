@@ -97,7 +97,7 @@ function importMeshA(scene: Scene, x: number, y: number) {
   let item: Promise<void | ISceneLoaderAsyncResult> =
     SceneLoader.ImportMeshAsync(
       "",
-      "./assets/models/men/",
+      "./assets/models/",
       "dummy3.babylon",
       scene
     );
@@ -111,6 +111,26 @@ function importMeshA(scene: Scene, x: number, y: number) {
   });
   return item;
 }
+
+export default function createStartScene(engine: Engine) {
+  let scene = new Scene(engine);
+  let audio = backgroundMusic(scene);
+  let lightHemispheric = createHemisphericLight(scene);
+  let camera = createArcRotateCamera(scene);
+  let player = importMeshA(scene, 0, 0);
+  let ground = createGround(scene);
+
+  let that: SceneData = {
+    scene,
+    audio,
+    lightHemispheric,
+    camera,
+    player,
+    ground,
+  };
+  return that;
+}
+
 
 
 
