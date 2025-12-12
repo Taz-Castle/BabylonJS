@@ -12,4 +12,13 @@
     "typescript": "~5.9.3",
     "vite": "^7.1.7"
   }
+
+    ,
+      "collision03build": "vite build collision03v2",
+    "collision03preview": "vite preview collision03v2 --host"
+    
 }
+
+
+
+
