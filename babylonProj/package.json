@@ -18,7 +18,9 @@
     "GUIswapbuild": "vite build GUIswap",
     "GUIswappreview": "vite preview GUIswap",
     "MyElementbuild": "vite build MyElement",
-    "MyElementpreview": "vite preview MyElement"
+    "MyElementpreview": "vite preview MyElement",
+    "shapes01build": "vite build shapes01",
+    "shapes01preview": "vite preview shapes01"
   },
   "devDependencies": {
     "typescript": "~5.9.3",
