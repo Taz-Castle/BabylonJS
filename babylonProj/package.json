@@ -5,18 +5,25 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "build": "vite build",
+    "preview": "vite preview",
+        "collision03build": "vite build collision03",
+    "collision03preview": "vite preview collision03 --host",
+    "Villagebuild": "vite build Village",
+    "Villagepreview": "vite preview Village --host",
+    "Player04build": "vite build Player04",
+    "Player04preview": "vite preview Player04 --host",
+    "meshes01build": "vite build meshes01",
+    "meshes01preview": "vite preview meshes01 --host",
+    "GUIswapbuild": "vite build GUIswap",
+    "GUIswappreview": "vite preview GUIswap --host",
+    "MyElementbuild": "vite build MyElement",
+    "MyElementpreview": "vite preview MyElement --host"
   },
   "devDependencies": {
     "typescript": "~5.9.3",
     "vite": "^7.1.7"
-  }
-
-    ,
-      "collision03build": "vite build collision03v2",
-    "collision03preview": "vite preview collision03v2 --host"
-    
+  } 
 }
 
 
