@@ -14,15 +14,16 @@
     "Player04build": "vite build Player04",
     "Player04preview": "vite preview Player04 --host",
     "meshes01build": "vite build meshes01",
-    "meshes01preview": "vite preview meshes01 --host",
+    "meshes01preview": "vite preview meshes01",
     "GUIswapbuild": "vite build GUIswap",
-    "GUIswappreview": "vite preview GUIswap --host",
+    "GUIswappreview": "vite preview GUIswap",
     "MyElementbuild": "vite build MyElement",
-    "MyElementpreview": "vite preview MyElement --host"
+    "MyElementpreview": "vite preview MyElement"
   },
   "devDependencies": {
     "typescript": "~5.9.3",
-    "vite": "^7.1.7"
+    "vite": "^7.1.7",
+    "vite-plugin-chunk-split": "^0.5.0"
   } 
 }
 
